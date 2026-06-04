@@ -7,7 +7,6 @@ import { Search, Mic2, Frown, RefreshCw } from "lucide-react";
 
 const LRC_LINE_REGEX = /^\[(\d{2,}):(\d{2}(?:\.\d+)?)\](.*)/;
 const NOISE_WORDS_REGEX = /\b(karaoke|instrumental|cover|official|music|video)\b/gi;
-const CLEAN_QUERY_REGEX = /[\(\[【].*?[\)\]】]|karaoke|instrumental|cover|official|music|video|audio|mv|hd|4k|1080p|lyric|lyrics/gi;
 const SMOOTH_SCROLL_DURATION_MS = 1500;
 
 interface LyricsData {
