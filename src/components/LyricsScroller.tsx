@@ -19,7 +19,7 @@ interface ParsedLine {
 }
 
 export default function LyricsScroller() {
-  const { currentSong, searchMode, setSearchMode, currentTime } = useKaraokeStore();
+  const { currentSong, searchMode, setSearchMode, currentTime, setSeekToTime } = useKaraokeStore();
   const [lyrics, setLyrics] = useState<LyricsData | null>(null);
   const [parsedLines, setParsedLines] = useState<ParsedLine[]>([]);
   const [loading, setLoading] = useState(false);
@@ -184,12 +184,16 @@ export default function LyricsScroller() {
                 <p 
                   key={i} 
                   ref={isActive ? activeLineRef : null}
+                  onClick={() => {
+                    setSeekToTime(line.time);
+                    setIsAutoScroll(true); // Resume auto-scrolling immediately
+                  }}
                   className={`text-3xl sm:text-4xl md:text-5xl font-bold transition-all duration-500 cursor-pointer leading-tight tracking-tight origin-left
                     ${isActive 
                       ? 'text-white scale-[1.05] drop-shadow-[0_0_15px_rgba(255,255,255,0.4)] opacity-100' 
                       : isPassed 
-                        ? 'text-gray-600 opacity-50' 
-                        : 'text-gray-500 opacity-40 hover:opacity-80'}
+                        ? 'text-gray-600 opacity-50 hover:text-gray-300' 
+                        : 'text-gray-500 opacity-40 hover:opacity-80 hover:text-gray-300'}
                   `}
                 >
                   {line.text}

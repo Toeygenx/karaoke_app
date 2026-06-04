@@ -6,7 +6,7 @@ import { Music } from "lucide-react";
 import { useKaraokeStore } from "@/store/useKaraokeStore";
 
 export default function VideoPlayer() {
-  const { currentSong, playNext, setCurrentTime } = useKaraokeStore();
+  const { currentSong, playNext, setCurrentTime, seekToTime, setSeekToTime } = useKaraokeStore();
   const playerRef = useRef<YouTubePlayer | null>(null);
 
   useEffect(() => {
@@ -21,6 +21,13 @@ export default function VideoPlayer() {
 
     return () => clearInterval(interval);
   }, [currentSong, setCurrentTime]);
+
+  useEffect(() => {
+    if (seekToTime !== null && playerRef.current && typeof playerRef.current.seekTo === 'function') {
+      playerRef.current.seekTo(seekToTime, true);
+      setSeekToTime(null);
+    }
+  }, [seekToTime, setSeekToTime]);
 
   const handleReady = (event: YouTubeEvent) => {
     playerRef.current = event.target;
