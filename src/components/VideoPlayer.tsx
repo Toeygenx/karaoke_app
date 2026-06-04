@@ -10,16 +10,14 @@ export default function VideoPlayer() {
   const playerRef = useRef<YouTubePlayer | null>(null);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    if (!currentSong) return;
     
-    if (playerRef.current) {
-      interval = setInterval(async () => {
-        if (playerRef.current && typeof playerRef.current.getCurrentTime === 'function') {
-          const time = await playerRef.current.getCurrentTime();
-          setCurrentTime(time);
-        }
-      }, 100); // Check every 100ms for smooth sync
-    }
+    const interval = setInterval(async () => {
+      if (playerRef.current && typeof playerRef.current.getCurrentTime === 'function') {
+        const time = await playerRef.current.getCurrentTime();
+        setCurrentTime(time);
+      }
+    }, 100); // Check every 100ms for smooth sync
 
     return () => clearInterval(interval);
   }, [currentSong, setCurrentTime]);
