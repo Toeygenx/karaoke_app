@@ -13,7 +13,6 @@ interface KaraokeState {
   queue: Song[];
   currentTime: number;
   seekToTime: number | null;
-  searchMode: 'youtube' | 'fallback';
   
   // Actions
   playSong: (song: Song) => void;
@@ -23,7 +22,6 @@ interface KaraokeState {
   playNext: () => void;
   setCurrentTime: (time: number) => void;
   setSeekToTime: (time: number | null) => void;
-  setSearchMode: (mode: 'youtube' | 'fallback') => void;
 }
 
 export const useKaraokeStore = create<KaraokeState>((set) => ({
@@ -31,7 +29,6 @@ export const useKaraokeStore = create<KaraokeState>((set) => ({
   queue: [],
   currentTime: 0,
   seekToTime: null,
-  searchMode: 'youtube',
   
   playSong: (song) => set((state) => ({ 
     currentSong: song,
@@ -59,6 +56,5 @@ export const useKaraokeStore = create<KaraokeState>((set) => ({
   }),
   
   setCurrentTime: (time) => set({ currentTime: time }),
-  setSeekToTime: (time) => set({ seekToTime: time }),
-  setSearchMode: (mode) => set({ searchMode: mode })
+  setSeekToTime: (time) => set({ seekToTime: time })
 }));
