@@ -1,7 +1,7 @@
 "use client";
 
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
-import { Trash2, GripVertical, Play } from "lucide-react";
+import { Trash2, GripVertical, Play, ListMusic } from "lucide-react";
 import { useKaraokeStore } from "@/store/useKaraokeStore";
 import { useEffect, useState } from "react";
 
@@ -34,8 +34,12 @@ export default function QueueManager() {
       </div>
       
       {queue.length === 0 ? (
-        <div className="p-8 text-center text-gray-500 border border-dashed border-surface-border rounded-lg bg-background/50">
-          Queue is empty. Add songs from search!
+        <div className="p-8 mt-2 flex flex-col items-center justify-center text-center border-2 border-dashed border-surface-border rounded-xl bg-background/50 hover:bg-surface/50 transition-colors group">
+          <div className="w-12 h-12 rounded-full bg-surface-border flex items-center justify-center mb-3 group-hover:scale-110 group-hover:bg-primary/20 transition-all duration-300">
+            <ListMusic size={24} className="text-gray-500 group-hover:text-primary transition-colors duration-300" />
+          </div>
+          <h3 className="font-semibold text-gray-300 mb-1">Queue is empty</h3>
+          <p className="text-sm text-gray-500">Add songs from the search bar to keep the party going!</p>
         </div>
       ) : (
         <DragDropContext onDragEnd={onDragEnd}>
@@ -52,8 +56,8 @@ export default function QueueManager() {
                       <div
                         ref={provided.innerRef}
                         {...provided.draggableProps}
-                        className={`flex items-center gap-3 p-2 bg-background border rounded-lg transition-all group ${
-                          snapshot.isDragging ? "shadow-xl shadow-primary/20 border-primary scale-[1.02] z-10" : "border-surface-border hover:border-gray-500"
+                        className={`flex items-center gap-3 p-2 bg-background border rounded-xl transition-all group animate-in fade-in slide-in-from-right-4 duration-300 ${
+                          snapshot.isDragging ? "shadow-2xl shadow-primary/20 border-primary scale-[1.02] z-10" : "border-surface-border hover:border-gray-500"
                         }`}
                       >
                         <div {...provided.dragHandleProps} className="text-gray-500 hover:text-white cursor-grab active:cursor-grabbing p-1">
@@ -70,14 +74,14 @@ export default function QueueManager() {
                               playSong(song);
                               removeSongFromQueue(song.id);
                             }}
-                            className="p-2 text-gray-400 hover:text-primary transition-colors rounded-full hover:bg-surface-hover"
+                            className="p-2 text-gray-400 hover:text-primary hover:bg-primary/10 transition-all rounded-full hover:scale-110 active:scale-95"
                             title="Play Next"
                           >
                             <Play size={16} />
                           </button>
                           <button 
                             onClick={() => removeSongFromQueue(song.id)}
-                            className="p-2 text-gray-400 hover:text-red-500 transition-colors rounded-full hover:bg-surface-hover"
+                            className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-500/10 transition-all rounded-full hover:scale-110 active:scale-95"
                             title="Remove from Queue"
                           >
                             <Trash2 size={16} />

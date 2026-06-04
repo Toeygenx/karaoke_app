@@ -67,11 +67,18 @@ export default function VideoPlayer() {
           className="w-full h-full absolute inset-0"
         />
       ) : (
-        <div className="w-full h-full flex flex-col items-center justify-center text-gray-500 bg-surface">
-          <div className="w-16 h-16 rounded-full bg-surface-border flex items-center justify-center mb-4">
-            <Music size={32} className="text-gray-400" />
+        <div className="w-full h-full flex flex-col items-center justify-center text-gray-500 bg-surface relative overflow-hidden group">
+          {/* Animated Background Elements */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary/10 rounded-full blur-[80px] group-hover:bg-primary/20 transition-all duration-1000 animate-pulse"></div>
+          <div className="absolute top-1/4 right-1/4 w-32 h-32 bg-purple-500/10 rounded-full blur-[60px] animate-pulse" style={{ animationDelay: '1s' }}></div>
+          
+          <div className="z-10 flex flex-col items-center">
+            <div className="w-20 h-20 rounded-full bg-surface-border/50 border border-surface-border flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(59,130,246,0.1)] group-hover:shadow-[0_0_40px_rgba(59,130,246,0.2)] group-hover:scale-110 transition-all duration-500">
+              <Music size={36} className="text-gray-400 group-hover:text-primary transition-colors duration-500" />
+            </div>
+            <h2 className="text-2xl font-bold text-white mb-2 tracking-tight">Ready to Sing?</h2>
+            <p className="text-gray-400">Search for a track above to get started</p>
           </div>
-          <p className="text-lg">Search for a song to start</p>
         </div>
       )}
     </div>

@@ -118,7 +118,7 @@ export default function LyricsScroller() {
 
   if (!currentSong) {
     return (
-      <div className="h-full flex flex-col items-center justify-center text-gray-500 bg-surface/30 rounded-xl border border-surface-border">
+      <div className="h-full flex flex-col items-center justify-center text-gray-500 bg-surface/30 rounded-xl border border-surface-border animate-in fade-in duration-500">
         <Mic2 size={64} className="mb-6 opacity-30" />
         <p className="text-xl font-medium">Lyrics will appear here</p>
       </div>
@@ -127,7 +127,7 @@ export default function LyricsScroller() {
 
   if (loading) {
     return (
-      <div className="w-full h-full min-h-[400px] flex items-center justify-center bg-surface/30 rounded-xl border border-surface-border p-12">
+      <div className="w-full h-full min-h-[400px] flex items-center justify-center bg-surface/30 rounded-xl border border-surface-border p-12 animate-in fade-in duration-500">
         <div className="flex flex-col items-center gap-8">
           <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin shadow-[0_0_15px_rgba(59,130,246,0.3)]"></div>
           <p className="text-gray-300 font-medium text-xl animate-pulse tracking-wide">Finding lyrics...</p>
@@ -138,7 +138,7 @@ export default function LyricsScroller() {
 
   if (!lyrics?.found) {
     return (
-      <div className="h-full flex flex-col items-center justify-center gap-6 p-8 text-center bg-surface/30 rounded-xl border border-surface-border shadow-lg">
+      <div className="h-full flex flex-col items-center justify-center gap-6 p-8 text-center bg-surface/30 rounded-xl border border-surface-border shadow-lg animate-in fade-in duration-500">
         <Frown size={72} className="text-gray-500 opacity-50 drop-shadow-lg" />
         <div>
           <h3 className="text-2xl font-bold mb-2 text-white">Lyrics Not Found</h3>
@@ -162,7 +162,7 @@ export default function LyricsScroller() {
   }
 
   return (
-    <div className="h-full flex flex-col overflow-hidden relative bg-surface/20 rounded-xl border border-surface-border shadow-inner">
+    <div className="h-full flex flex-col overflow-hidden relative bg-surface/20 rounded-xl border border-surface-border shadow-inner animate-in fade-in duration-700">
       <div 
         ref={containerRef}
         onScroll={handleScroll}

@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import { Search, Plus, Play, X } from "lucide-react";
+import { Search, Plus, Play, X, Flame, Sparkles } from "lucide-react";
 import { useKaraokeStore, Song } from "@/store/useKaraokeStore";
 
 export default function YoutubeSearch() {
@@ -28,7 +28,6 @@ export default function YoutubeSearch() {
     if (query.trim()) {
       setIsOpen(true);
     } else {
-      setIsOpen(false);
       setResults([]);
     }
   }, [query]);
@@ -36,7 +35,7 @@ export default function YoutubeSearch() {
   const handleSearch = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!query.trim()) return;
-    
+
     setLoading(true);
     setIsOpen(true);
     try {
@@ -72,12 +71,13 @@ export default function YoutubeSearch() {
         <input
           type="text"
           value={query}
+          onFocus={() => setIsOpen(true)}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search for karaoke tracks..."
           className="w-full bg-surface border-2 border-surface-border rounded-full pl-16 pr-16 py-4 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all text-xl text-white shadow-xl"
         />
         {query && (
-          <button 
+          <button
             type="button"
             onClick={clearSearch}
             className="absolute right-4 p-2 text-gray-400 hover:text-white bg-surface-border hover:bg-gray-600 rounded-full transition-colors"
@@ -88,39 +88,47 @@ export default function YoutubeSearch() {
       </form>
 
       {isOpen && (
-        <div className="absolute top-[110%] left-0 right-0 bg-surface border border-surface-border rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col">
-          {loading && results.length === 0 ? (
-            <div className="p-8 flex justify-center">
-              <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full"></div>
+        <div className="absolute top-[110%] left-0 right-0 bg-surface border border-surface-border rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col z-50 animate-in fade-in slide-in-from-top-4 duration-300">
+          {loading ? (
+            <div className="p-4 flex flex-col gap-3">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="flex items-center gap-4 p-3 rounded-xl bg-surface-border/20 animate-pulse">
+                  <div className="w-24 h-16 bg-surface-border rounded-lg"></div>
+                  <div className="flex-1 flex flex-col gap-2">
+                    <div className="h-4 bg-surface-border rounded w-3/4"></div>
+                    <div className="h-3 bg-surface-border rounded w-1/2"></div>
+                  </div>
+                </div>
+              ))}
             </div>
           ) : results.length > 0 ? (
             <div className="max-h-[60vh] overflow-y-auto hide-scrollbar p-2">
               {results.map((song) => (
-                <div key={song.id} className="flex items-center gap-4 p-3 hover:bg-surface-hover rounded-xl transition-colors group">
-                  <img src={song.thumbnail} alt={song.title} className="w-24 h-16 object-cover rounded-lg shadow-md" />
+                <div key={song.id} className="flex items-center gap-4 p-3 hover:bg-surface-hover rounded-xl transition-all duration-200 hover:scale-[1.01] group">
+                  <img src={song.thumbnail} alt={song.title} className="w-24 h-16 object-cover rounded-lg shadow-md group-hover:shadow-primary/20" />
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold text-base truncate text-white">{song.title}</p>
                     <p className="text-sm text-gray-400 truncate mt-1">{song.author} • {song.duration}</p>
                   </div>
                   <div className="flex gap-2">
-                    <button 
+                    <button
                       onClick={() => {
                         playSong(song);
                         setIsOpen(false);
                         setQuery("");
                       }}
-                      className="p-3 bg-primary text-white rounded-full hover:scale-110 transition-transform shadow-lg shadow-primary/30"
+                      className="p-3 bg-primary text-white rounded-full hover:scale-110 transition-transform shadow-lg shadow-primary/30 active:scale-95"
                       title="Play Now"
                     >
                       <Play size={20} />
                     </button>
-                    <button 
+                    <button
                       onClick={() => {
                         addSongToQueue(song);
                         setIsOpen(false);
                         setQuery("");
                       }}
-                      className="p-3 bg-surface-border text-white rounded-full hover:bg-gray-600 transition-colors"
+                      className="p-3 bg-surface-border text-white rounded-full hover:bg-gray-600 transition-colors hover:scale-110 active:scale-95"
                       title="Add to Queue"
                     >
                       <Plus size={20} />
@@ -130,8 +138,12 @@ export default function YoutubeSearch() {
               ))}
             </div>
           ) : query.length > 2 && !loading ? (
-            <div className="p-8 text-center text-gray-400">
-              No results found for "{query}"
+            <div className="p-12 flex flex-col items-center justify-center text-center text-gray-400">
+              <div className="w-16 h-16 rounded-full bg-surface-border flex items-center justify-center mb-4 text-gray-500">
+                <Search size={32} />
+              </div>
+              <p className="text-xl font-semibold text-white mb-2">No tracks found</p>
+              <p>We couldn't find anything for "{query}". Try another search!</p>
             </div>
           ) : null}
         </div>
