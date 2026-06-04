@@ -5,6 +5,8 @@ import YouTube, { YouTubeEvent, YouTubePlayer } from "react-youtube";
 import { Music } from "lucide-react";
 import { useKaraokeStore } from "@/store/useKaraokeStore";
 
+const SYNC_INTERVAL_MS = 100;
+
 export default function VideoPlayer() {
   const { currentSong, playNext, setCurrentTime, seekToTime, setSeekToTime } = useKaraokeStore();
   const playerRef = useRef<YouTubePlayer | null>(null);
@@ -17,7 +19,7 @@ export default function VideoPlayer() {
         const time = await playerRef.current.getCurrentTime();
         setCurrentTime(time);
       }
-    }, 100); // Check every 100ms for smooth sync
+    }, SYNC_INTERVAL_MS);
 
     return () => clearInterval(interval);
   }, [currentSong, setCurrentTime]);

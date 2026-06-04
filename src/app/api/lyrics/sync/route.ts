@@ -1,5 +1,16 @@
 import { NextResponse } from "next/server";
 
+interface LrcLibResponse {
+  id: number;
+  trackName: string;
+  artistName: string;
+  albumName: string;
+  duration: number;
+  instrumental: boolean;
+  plainLyrics: string;
+  syncedLyrics: string | null;
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const query = searchParams.get("q");
@@ -18,7 +29,7 @@ export async function GET(request: Request) {
     
     if (Array.isArray(data) && data.length > 0) {
       // Find the first one that has syncedLyrics, otherwise fallback to plain
-      const bestMatch = data.find((item: any) => item.syncedLyrics) || data[0];
+      const bestMatch = data.find((item: LrcLibResponse) => item.syncedLyrics) || data[0];
       
       return NextResponse.json({
         found: true,

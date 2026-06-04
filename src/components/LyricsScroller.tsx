@@ -4,7 +4,11 @@ import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { useKaraokeStore } from "@/store/useKaraokeStore";
 import { Search, Mic2, Frown, RefreshCw } from "lucide-react";
-import FallbackSearch from "./FallbackSearch";
+
+const LRC_LINE_REGEX = /^\[(\d{2,}):(\d{2}(?:\.\d+)?)\](.*)/;
+const NOISE_WORDS_REGEX = /\b(karaoke|instrumental|cover|official|music|video)\b/gi;
+const CLEAN_QUERY_REGEX = /[\(\[【].*?[\)\]】]|karaoke|instrumental|cover|official|music|video|audio|mv|hd|4k|1080p|lyric|lyrics/gi;
+const SMOOTH_SCROLL_DURATION_MS = 1500;
 
 interface LyricsData {
   found: boolean;
@@ -19,7 +23,7 @@ interface ParsedLine {
 }
 
 export default function LyricsScroller() {
-  const { currentSong, searchMode, setSearchMode, currentTime, setSeekToTime } = useKaraokeStore();
+  const { currentSong, currentTime, setSeekToTime } = useKaraokeStore();
   const [lyrics, setLyrics] = useState<LyricsData | null>(null);
   const [parsedLines, setParsedLines] = useState<ParsedLine[]>([]);
   const [loading, setLoading] = useState(false);
@@ -40,15 +44,14 @@ export default function LyricsScroller() {
     const fetchLyrics = async () => {
       setLoading(true);
       try {
-        const query = currentSong.title.replace(/karaoke|instrumental|cover|official|music|video/gi, '').trim();
+        const query = currentSong.title.replace(NOISE_WORDS_REGEX, '').trim();
         const res = await axios.get(`/api/lyrics/sync?q=${encodeURIComponent(query)}`);
         setLyrics(res.data);
         
         if (res.data.syncedLyrics) {
           const lines: ParsedLine[] = [];
           res.data.syncedLyrics.split('\n').forEach((line: string) => {
-            // Support formats like [01:23.45], [01:23.4], [01:23.456], or even [01:23]
-            const match = line.match(/^\[(\d{2,}):(\d{2}(?:\.\d+)?)\](.*)/);
+            const match = line.match(LRC_LINE_REGEX);
             if (match) {
               const minutes = parseInt(match[1], 10);
               const seconds = parseFloat(match[2]);
@@ -72,10 +75,8 @@ export default function LyricsScroller() {
     fetchLyrics();
   }, [currentSong]);
 
-  // Find active line index
   let activeIndex = -1;
   for (let i = 0; i < parsedLines.length; i++) {
-    // Exact match without early buffer
     if (currentTime >= parsedLines[i].time) {
       activeIndex = i;
     } else {
@@ -83,7 +84,6 @@ export default function LyricsScroller() {
     }
   }
 
-  // Auto-scroll logic
   useEffect(() => {
     if (activeLineRef.current && isAutoScroll) {
       isProgrammaticScroll.current = true;
@@ -95,7 +95,7 @@ export default function LyricsScroller() {
       if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
       scrollTimeoutRef.current = setTimeout(() => {
         isProgrammaticScroll.current = false;
-      }, 1500); // Wait longer for smooth scroll to completely finish
+      }, SMOOTH_SCROLL_DURATION_MS);
     }
   }, [activeIndex, isAutoScroll]);
 
@@ -111,10 +111,6 @@ export default function LyricsScroller() {
       setIsAutoScroll(false);
     }
   };
-
-  if (searchMode === 'lyrics_fallback') {
-    return <FallbackSearch />;
-  }
 
   if (!currentSong) {
     return (
